@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#-*-coding:utf-8 -*-
+
 from urllib import request, parse
 import re
 import smtplib
@@ -10,7 +10,7 @@ import time
 
 log_file='lecture_log'
 logging.basicConfig(filename=log_file,level=logging.DEBUG)
-ISOTIMEFORMAT='%Y-%m-%d %X'
+
 
 
 class XMU_Lecture:
@@ -20,7 +20,7 @@ class XMU_Lecture:
 			self.bookUrl          = 'http://ischoolgu.xmu.edu.cn/admin_bookChair.aspx'
 			self.agentHeaderKey   = 'User-Agent' 
 			self.agentHeaderValue = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
-			self.charSet          = 'gb2312'
+			self.charSet          = 'gbk'
 			self.userInfo         = [('userName', 23120161153264), ('passWord', 172826), ('userType', 1)]
 			self.session          = ''
 			self.hiddenState      = ''
@@ -43,6 +43,7 @@ class XMU_Lecture:
 		req.add_header(self.agentHeaderKey, self.agentHeaderValue)
 		req.add_header('Cookie', self.session)
 		result = request.urlopen(req).read().decode(self.charSet)
+		# result = request.urlopen(req).read().decode('gbk')
 		state_match_rule = re.compile('hidden.*id="(.*)".*value="(.*)" />')
 		self.hiddenState = re.findall(state_match_rule, result)
 		return result
@@ -102,6 +103,7 @@ class XMU_Lecture:
 		req.add_header(self.agentHeaderKey, self.agentHeaderValue)
 		req.add_header('Cookie', self.session)
 		result = request.urlopen(req).read().decode(self.charSet)
+		# result = request.urlopen(req).read().decode('gbk')
 		# chairData = re.findall('id="(chairId.*)" value="(.*)" />', result)
 		chairState = re.search('预约时间还没到', result)
 
@@ -160,13 +162,19 @@ class XMU_Lecture:
 		    print("Success!")
 		except smtplib.SMTPException as e:
 		    print("Falied" + e)
-				
+	
+	def currentTime(self):
+		ISOTIMEFORMAT='%Y-%m-%d %X'
+		return time.strftime(ISOTIMEFORMAT, time.localtime())			
 				
 lecture = XMU_Lecture()
+# lecture.getCurrentLectureInfo()
 try:
-	lecture.bookLecture()
+	lecture.getCurrentLectureInfo()
+	logging.info(lecture.currentTime())
+	logging.info('Success!')
 except:
-	logging.info(time.strftime( ISOTIMEFORMAT, time.localtime() ))
+	logging.info(lecture.currentTime())
 	logging.exception("exception")
 
 
