@@ -5,6 +5,13 @@ import re
 import smtplib
 from email.mime.text import MIMEText
 
+import logging
+import time
+
+log_file='lecture_log'
+logging.basicConfig(filename=log_file,level=logging.DEBUG)
+ISOTIMEFORMAT='%Y-%m-%d %X'
+
 
 class XMU_Lecture:
 
@@ -156,7 +163,11 @@ class XMU_Lecture:
 				
 				
 lecture = XMU_Lecture()
-lecture.bookLecture()
+try:
+	lecture.bookLecture()
+except:
+	logging.info(time.strftime( ISOTIMEFORMAT, time.localtime() ))
+	logging.exception("exception")
 
 
 	
