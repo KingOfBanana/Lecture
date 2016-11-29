@@ -126,10 +126,10 @@ class XMU_Lecture:
 
 		query = self.hiddenState
 
-		submitData = re.findall('name="(ctl.*)" value="(.*)"', result)
+		submitData = re.findall('name="(ctl.*)" value="(预约该讲座)"', result)
 		for items in submitData:
 			query.append(items)
-		
+		print(query)
 		lecture_data = parse.urlencode(query, encoding=self.charSet)
 
 		req = request.Request(
@@ -168,14 +168,8 @@ class XMU_Lecture:
 		return time.strftime(ISOTIMEFORMAT, time.localtime())			
 				
 lecture = XMU_Lecture()
-# lecture.getCurrentLectureInfo()
-try:
-	lecture.getCurrentLectureInfo()
-	logging.info(lecture.currentTime())
-	logging.info('Success!')
-except:
-	logging.info(lecture.currentTime())
-	logging.exception("exception")
+lecture.bookLecture()
+
 
 
 	
