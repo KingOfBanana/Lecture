@@ -28,12 +28,17 @@ def run_thread(chairId):
 		elif state == 0:
 			print('Please wait!')
 		else:
-			try:
-				flag = 1
-			finally:
-				lock.release()
-				result = lecture.getLecture(chairId, state)
-				print(result)
+			if flag == 0:
+				lock.acquire()
+				try:
+					flag = 1
+				finally:
+					lock.release()
+					result = lecture.getLecture(chairId, state)
+					print(result)
+			# 再判断一次，以防这种情况：两个进程都获得了ctl，一个已经修改flag为1，另一个还会继续执行getLecture方法，造成两遍post
+			else:
+				print('Other threads will complete this mission!')
 
 for i in range(total_thread_num):
 	t = threading.Thread(target=run_thread, args=(chairId, ))
