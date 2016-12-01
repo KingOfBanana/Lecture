@@ -8,10 +8,10 @@ from email.mime.text import MIMEText
 import logging
 import time
 
+from info import *
+
 log_file='lecture_log'
 logging.basicConfig(filename=log_file,level=logging.DEBUG)
-
-
 
 class XMU_Lecture:
 
@@ -21,7 +21,7 @@ class XMU_Lecture:
 			self.agentHeaderKey   = 'User-Agent' 
 			self.agentHeaderValue = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
 			self.charSet          = 'gbk'
-			self.userInfo         = [('userName', 23120161153264), ('passWord', 172826), ('userType', 1)]
+			self.userInfo         = [('userName', stu_id), ('passWord', stu_password), ('userType', 1)]
 			self.session          = ''
 			self.hiddenState      = ''
 
@@ -43,7 +43,6 @@ class XMU_Lecture:
 		req.add_header(self.agentHeaderKey, self.agentHeaderValue)
 		req.add_header('Cookie', self.session)
 		result = request.urlopen(req).read().decode(self.charSet)
-		# result = request.urlopen(req).read().decode('gbk')
 		state_match_rule = re.compile('hidden.*id="(.*)".*value="(.*)" />')
 		self.hiddenState = re.findall(state_match_rule, result)
 		return result
@@ -103,10 +102,7 @@ class XMU_Lecture:
 		req.add_header(self.agentHeaderKey, self.agentHeaderValue)
 		req.add_header('Cookie', self.session)
 		result = request.urlopen(req).read().decode(self.charSet)
-		# result = request.urlopen(req).read().decode('gbk')
-		# chairData = re.findall('id="(chairId.*)" value="(.*)" />', result)
 		chairState = re.search('预约时间还没到', result)
-
 		# 若有新讲座，则发邮件通知
 		if chairState != None:
 			chairInfo = re.findall('<td align="center">(.*)</td><td align="center">(.*)</td>', result)
@@ -118,36 +114,11 @@ class XMU_Lecture:
 				info = info + ' '		
 
 			self.emailSend(info)
-		
-
-	def bookLecture(self):
-		self.loginHandler()
-		result = self.stateUpdate(self.bookUrl)
-
-		query = self.hiddenState
-
-		submitData = re.findall('name="(ctl.*)" value="(预约该讲座)"', result)
-		for items in submitData:
-			query.append(items)
-		print(query)
-		lecture_data = parse.urlencode(query, encoding=self.charSet)
-
-		req = request.Request(
-			url = 'http://ischoolgu.xmu.edu.cn/admin_bookChair.aspx',
-			data = lecture_data.encode(self.charSet) 
-		)
-
-		req.add_header(self.agentHeaderKey, self.agentHeaderValue)
-		req.add_header('Cookie', self.session)
-
-		result = request.urlopen(req).read().decode(self.charSet)
-		bookResult = re.findall('<td align="center" colspan="2">(.*?)</td>', result)
-		print(bookResult)		
-		
+				
 	def emailSend(self, message):
-		_user = "82736124@qq.com"
-		_pwd  = "lcmjsvtpqkuzbgig"
-		_to   = "82736124@qq.com"
+		_user = email_user
+		_pwd  = email_password
+		_to   = email_sendto
 
 		msg = MIMEText(message, 'plain', 'utf-8')
 		msg["Subject"] = "新讲座提醒"
@@ -155,7 +126,7 @@ class XMU_Lecture:
 		msg["To"]      = _to
 
 		try:
-		    s = smtplib.SMTP_SSL("smtp.qq.com", 465)
+		    s = smtplib.SMTP_SSL(email_smtp, 465)
 		    s.login(_user, _pwd)
 		    s.sendmail(_user, _to, msg.as_string())
 		    s.quit()
@@ -168,8 +139,14 @@ class XMU_Lecture:
 		return time.strftime(ISOTIMEFORMAT, time.localtime())			
 				
 lecture = XMU_Lecture()
-lecture.bookLecture()
-
+lecture.getCurrentLectureInfo()
+# try:
+# 	lecture.getCurrentLectureInfo()
+# 	logging.info(lecture.currentTime())
+# 	logging.info('Success!')
+# except:
+# 	logging.info(lecture.currentTime())
+# 	logging.exception("exception")
 
 
 	
