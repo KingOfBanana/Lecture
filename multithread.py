@@ -3,14 +3,14 @@ import time, threading
 from lecture import *
 import random
 
-chairId = '653'
+chairId = '655'
 flag = 0
 lock = threading.Lock()
 result = 'init'
-total_thread_num = 4
+total_thread_num = 2
 
 class MultiThread:
-
+    
 	def run_thread(self, chairId):
 		global flag
 		global result
@@ -30,8 +30,8 @@ class MultiThread:
 						print('Failed!')
 			elif state == 0:
 				print('Please wait!')
-				# 每个线程隔0.7秒在进行下一次的请求
-				time.sleep(0.7)
+				# 每个线程隔0.8秒在进行下一次的请求
+				time.sleep(0.8)
 			else:
 				if flag == 0:
 					lock.acquire()
@@ -47,10 +47,11 @@ class MultiThread:
 
 	def startThread(self, total_thread_num, chairId):				
 		for i in range(total_thread_num):
-			t = threading.Thread(target=self.run_thread, args=(chairId, ))
-			t.start()
-			time.sleep(0.8)
+				t = threading.Thread(target=self.run_thread, args=(chairId, ))
+				t.start()
+				time.sleep(0.8)
 
 if __name__=='__main__':
 	multithread = MultiThread()
 	multithread.startThread(total_thread_num, chairId)
+

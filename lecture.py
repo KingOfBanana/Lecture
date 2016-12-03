@@ -85,7 +85,7 @@ class XMU_Lecture:
 		matchrule_part1 = 'hidden.*id=".*".*value="' + chairId
 		matchrule_part2 = '" />.*</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center" colspan="2">(.*)</td>\s*</tr>'		
 		chairInfo = re.findall(matchrule_part1 + matchrule_part2, page)
-		# 16为讲座状态所在的相对位置
+		# -1为讲座状态所在的相对位置
 		if '取消预约' in chairInfo[0][-1]:
 			return 2
 		# 如果当前是可预约状态，返回值类似（'ctl**', '预约该讲座'）
@@ -101,7 +101,7 @@ class XMU_Lecture:
 		matchrule_part1 = 'hidden.*id=".*".*value="' + chairId
 		matchrule_part2 = '" />.*</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center" colspan="2">(.*)</td>\s*</tr>'		
 		chairInfo = re.findall(matchrule_part1 + matchrule_part2, Page)
-		# 16为讲座状态所在的相对位置
+		# -1为讲座状态所在的相对位置
 		if '取消预约' in chairInfo[0][-1]:
 			return 'Success!'
 		elif '预约该讲座' in chairInfo[0][-1]:

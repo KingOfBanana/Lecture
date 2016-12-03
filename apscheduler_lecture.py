@@ -8,13 +8,6 @@ import info
 def my_job():
     multithread = MultiThread()
     multithread.startThread(total_thread_num, chairId)
-    # print('hello')
-    # emailSend('chairId') 
-    # sched.shutdown()
-    # shutdown错误，beta版先保留sleep
-    # sched.shutdown()
-
-
 
 # sched = BlockingScheduler()
 sched = BackgroundScheduler()
