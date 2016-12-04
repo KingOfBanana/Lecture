@@ -18,6 +18,6 @@ def my_job():
 
 # sched = BlockingScheduler()
 sched = BackgroundScheduler()
-sched.add_job(my_job, 'date', run_date=datetime(2016, 12, 3, 10, 55, 30))
+sched.add_job(my_job, 'date', run_date=datetime(2016, 12, 3, 18, 59, 55))
 sched.start()
-time.sleep(20)
+time.sleep(660)
