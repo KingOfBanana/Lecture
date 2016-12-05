@@ -89,6 +89,18 @@ class XMU_Lecture:
 		if self.session == '':
 			self.login()
 
+	# 把讲座系统中的20xx/x/x转化为规范的20xx/0x/0x，便于后续处理
+	def dateStrHandler(datestr):
+		date_str_tuple = re.findall('(.*)/(.*)/(.*)\s(.*)', datestr)[0]
+		date_str = ''
+		for items in date_str_tuple:
+			if len(items) == 1:
+				items = '0' + items
+			date_str = date_str + items
+		date = datetime.strptime(date_str, "%Y%m%d%H:%M:%S")
+		date_str = datetime.strftime(date, "%Y/%m/%d %H:%M:%S")
+		return date_str
+
 	def getCurrentLectureInfo(self):
 		self.loginHandler()
 
@@ -116,6 +128,8 @@ class XMU_Lecture:
 							lecture_data_list.append(int(listitems[i * 2 + 1]))
 						elif listitems[i * 2] in '可预约数剩余票数':
 							lecture_data_list.append(int(listitems[i * 2 + 1]))
+						elif listitems[i * 2] in '预约起始时间':
+							lecture_data_list.append(self.dateStrHandler(listitems[i * 2 + 1]))
 						else:
 							lecture_data_list.append(listitems[i * 2 + 1])
 					lecture_data_list.append(0)	
