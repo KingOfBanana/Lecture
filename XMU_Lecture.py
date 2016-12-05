@@ -165,9 +165,9 @@ class XMU_Lecture:
 		ISOTIMEFORMAT='%Y-%m-%d %X'
 		return time.strftime(ISOTIMEFORMAT, time.localtime())	
 
-if __name__=='__main__':				
-	lecture = XMU_Lecture()
-	lecture.getCurrentLectureInfo()
+				
+lecture = XMU_Lecture()
+lecture.getCurrentLectureInfo()
 
 
 

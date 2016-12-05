@@ -2,9 +2,14 @@ from datetime import datetime
 from info import *
 import pymysql
 import re
+from apscheduler.schedulers.background import BackgroundScheduler
+import time
+from multithread import *
+import info
 
-def test():
-	pass
+def my_job():
+    multithread = MultiThread()
+    multithread.startThread(total_thread_num, chairId)
 
 now_date_str = datetime.strftime(datetime.now(), "%Y/%m/%d %H:%M:%S")
 print(now_date_str)
@@ -14,15 +19,16 @@ cursor = conn.cursor()
 cursor.execute('select lecture_id, appoint_time from lecture where appoint_time > %s order by appoint_time', now_date_str)
 values = cursor.fetchall()
 if values != None:
-	chair_id = values[0][0]
+	chairId = values[0][0]
 	appoint_time = values[0][1]
 cursor.close()
 
-date1 = datetime.strptime(appoint_time, "%Y/%m/%d %H:%M:%S")
-date2 = datetime.now()
-# date2 = datetime.strptime(s2, "%Y-%m-%d %H:%M:%S")
-# date1 = datetime.datetime(2016,12,5,18,59,50)
-# date2 = datetime.datetime(2016,12,5,19,00,00)
+start_time   = datetime.strptime(appoint_time, "%Y/%m/%d %H:%M:%S")
+current_time = datetime.now()
 
-if (date2 - date1).seconds < 20:
-	print(1)
+# 若数据库中开抢时间距离当前时间不到20秒，就可以准备调用抢讲座程序了
+if (start_time - current_time).seconds < 20:
+	sched = BackgroundScheduler()
+	sched.add_job(my_job, 'date', run_date=start_time)
+	sched.start()
+	time.sleep(660)
