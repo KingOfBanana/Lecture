@@ -125,7 +125,7 @@ class XMU_Lecture:
 		req.add_header('Cookie', self.session)
 
 		page = request.urlopen(req).read().decode(self.charSet)
-		return resultParser(chairId, page)
+		return self.resultParser(chairId, page)
 
 if __name__=='__main__':				
 	lectureins = XMU_Lecture()

@@ -3,7 +3,7 @@ import time, threading
 from lecture import *
 import random
 
-# chairId = '655'
+chairId = '667'
 flag = 0
 lock = threading.Lock()
 result = 'init'
