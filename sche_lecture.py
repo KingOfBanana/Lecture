@@ -12,7 +12,6 @@ def my_job():
     multithread.startThread(total_thread_num, chairId)
 
 now_date_str = datetime.strftime(datetime.now(), "%Y/%m/%d %H:%M:%S")
-print(now_date_str)
 
 conn = pymysql.connect(user = mysql_user, password = mysql_password, host = mysql_aliyun_host, db = mysql_db, charset = 'utf8')
 cursor = conn.cursor()

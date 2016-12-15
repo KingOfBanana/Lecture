@@ -9,6 +9,10 @@ import logging
 import time
 import pymysql
 
+import time
+
+import datetime
+
 from info import *
 
 log_file='lecture_log'
@@ -90,15 +94,15 @@ class XMU_Lecture:
 			self.login()
 
 	# 把讲座系统中的20xx/x/x转化为规范的20xx/0x/0x，便于后续处理
-	def dateStrHandler(datestr):
+	def dateStrHandler(self, datestr):
 		date_str_tuple = re.findall('(.*)/(.*)/(.*)\s(.*)', datestr)[0]
 		date_str = ''
 		for items in date_str_tuple:
 			if len(items) == 1:
 				items = '0' + items
 			date_str = date_str + items
-		date = datetime.strptime(date_str, "%Y%m%d%H:%M:%S")
-		date_str = datetime.strftime(date, "%Y/%m/%d %H:%M:%S")
+		date = datetime.datetime.strptime(date_str, "%Y%m%d%H:%M:%S")
+		date_str = datetime.datetime.strftime(date, "%Y/%m/%d %H:%M:%S")
 		return date_str
 
 	def getCurrentLectureInfo(self):
@@ -129,7 +133,7 @@ class XMU_Lecture:
 						elif listitems[i * 2] in '可预约数剩余票数':
 							lecture_data_list.append(int(listitems[i * 2 + 1]))
 						elif listitems[i * 2] in '预约起始时间':
-							lecture_data_list.append(self.dateStrHandler(listitems[i * 2 + 1]))
+							lecture_data_list.append(self.dateStrHandler(listitems[i*2+1]))
 						else:
 							lecture_data_list.append(listitems[i * 2 + 1])
 					lecture_data_list.append(0)	
@@ -147,7 +151,7 @@ class XMU_Lecture:
 						insert_cursor = conn.cursor()
 						insert_cursor.execute('insert into lecture(lecture_id, speaker, theme, semester, total, rest, appoint_time, lecture_time, lecture_place, is_informed, create_time, update_time) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , lecture_data_list)
 						conn.commit()
-						insert.cursor.close()
+						insert_cursor.close()
 
 					# 此处的app_start_time_local为网页上“预约起始时间”所在的相对位置，此关系说明抢票时间有更新，需要更新数据库中的相关信息
 					elif values[0][0] != listitems[app_start_time_local]:
