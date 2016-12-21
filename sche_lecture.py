@@ -19,14 +19,18 @@ cursor.execute('select lecture_id, appoint_time from lecture where appoint_time 
 values = cursor.fetchall()
 if values != None:
 	chairId = values[0][0]
+	chairId = str(chairId)
 	appoint_time = values[0][1]
 cursor.close()
 conn.close()
 
+print(chairId)
+print(appoint_time)
+
 start_time   = datetime.strptime(appoint_time, "%Y/%m/%d %H:%M:%S")
 current_time = datetime.now()
 
-# 若数据库中开抢时间距离当前时间不到20秒，就可以准备调用抢讲座程序了
+# 若数据库中开抢时间距离当前时间不到60秒，就可以准备调用抢讲座程序了
 # 在服务器的crontab中，设置为每个整点或半点的前一分钟开始执行该脚本
 if (start_time - current_time).seconds <= 60:
 	sched = BackgroundScheduler()
