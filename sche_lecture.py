@@ -11,11 +11,9 @@ def my_job():
     multithread = MultiThread()
     multithread.startThread(total_thread_num, chairId)
 
-now_date_str = datetime.strftime(datetime.now(), "%Y/%m/%d %H:%M:%S")
-
 conn = pymysql.connect(user = mysql_user, password = mysql_password, host = mysql_aliyun_host, db = mysql_db, charset = 'utf8')
 cursor = conn.cursor()
-cursor.execute('select lecture_id, appoint_time from lecture where appoint_time > %s order by appoint_time', now_date_str)
+cursor.execute('select lecture_id, appoint_time from lecture where (UNIX_TIMESTAMP(appoint_time) - UNIX_TIMESTAMP(now())) > 0 order by (UNIX_TIMESTAMP(appoint_time) - UNIX_TIMESTAMP(now())) asc limit 1')
 values = cursor.fetchall()
 if values != None:
 	chairId = values[0][0]
@@ -24,8 +22,10 @@ if values != None:
 cursor.close()
 conn.close()
 
-print(chairId)
-print(appoint_time)
+# # test
+# print(chairId)
+# print(appoint_time)
+# # test end
 
 start_time   = datetime.strptime(appoint_time, "%Y/%m/%d %H:%M:%S")
 current_time = datetime.now()
