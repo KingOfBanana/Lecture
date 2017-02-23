@@ -3,7 +3,9 @@ import time, threading
 from lecture import *
 import random
 
-chairId = '668'
+import emailsend
+
+chairId = '0'
 flag = 0
 lock = threading.Lock()
 result = 'init'
@@ -26,8 +28,10 @@ class MultiThread:
 					lock.release()
 					if state == 2:
 						print('Success!')
+						emailsend.emailSend(useraddr="82736124@qq.com", subject="讲座预约成功", message=chairId)
 					elif state == -1:
 						print('Failed!')
+						emailsend.emailSend(useraddr="82736124@qq.com", subject="讲座预约失败", message=chairId)
 			elif state == 0:
 				print('Please wait!')
 				# 每个线程隔0.8秒在进行下一次的请求
@@ -52,6 +56,9 @@ class MultiThread:
 				time.sleep(0.8)
 
 if __name__=='__main__':
-	multithread = MultiThread()
-	multithread.startThread(total_thread_num, chairId)
+	if chairId == '0':
+		print('there is no lecture now.')
+	else:
+		multithread = MultiThread()
+		multithread.startThread(total_thread_num, chairId)
 

@@ -85,31 +85,34 @@ class XMU_Lecture:
 		matchrule_part1 = 'hidden.*id=".*".*value="' + chairId
 		matchrule_part2 = '" />.*</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center" colspan="2">(.*)</td>\s*</tr>'		
 		chairInfo = re.findall(matchrule_part1 + matchrule_part2, page)
-		# -1为讲座状态所在的相对位置
-		if '取消预约' in chairInfo[0][-1]:
-			return 2
-		# 如果当前是可预约状态，返回值类似（'ctl**', '预约该讲座'）
-		elif '预约该讲座' in chairInfo[0][-1]:
-			return re.findall('name="(ctl.*)" value="(预约该讲座)"', chairInfo[0][-1])[0]
-			# return 1
-		elif '还没到' in chairInfo[0][-1]:
-			return 0
-		else:
-			return -1
+
+		if chairInfo:
+			# -1为讲座状态所在的相对位置
+			if '取消预约' in chairInfo[0][-1]:
+				return 2
+			# 如果当前是可预约状态，返回值类似（'ctl**', '预约该讲座'）
+			elif '预约该讲座' in chairInfo[0][-1]:
+				return re.findall('name="(ctl.*)" value="(预约该讲座)"', chairInfo[0][-1])[0]
+				# return 1
+			elif '还没到' in chairInfo[0][-1]:
+				return 0
+			else:
+				return -1
 
 	def resultParser(self, chairId, Page):
 		matchrule_part1 = 'hidden.*id=".*".*value="' + chairId
 		matchrule_part2 = '" />.*</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center">(.*)</td><td align="center">(.*)</td>\s*</tr><tr>\s*<td align="center" colspan="2">(.*)</td>\s*</tr>'		
 		chairInfo = re.findall(matchrule_part1 + matchrule_part2, Page)
-		# -1为讲座状态所在的相对位置
-		if '取消预约' in chairInfo[0][-1]:
-			return 'Success!'
-		elif '预约该讲座' in chairInfo[0][-1]:
-			return 'It\'s time to get this lecture!' 
-		elif '还没到' in chairInfo[0][-1]:
-			return 'Please wait'
-		else:
-			return 'Failed'
+		if chairInfo:
+			# -1为讲座状态所在的相对位置
+			if '取消预约' in chairInfo[0][-1]:
+				return 'Success!'
+			elif '预约该讲座' in chairInfo[0][-1]:
+				return 'It\'s time to get this lecture!' 
+			elif '还没到' in chairInfo[0][-1]:
+				return 'Please wait'
+			else:
+				return 'Failed'
 
 	# 单纯的post方法抢讲座（已知ctl），之后返回结果
 	def getLecture(self, chairId, ctltuple):

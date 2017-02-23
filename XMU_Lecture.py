@@ -2,12 +2,12 @@
 
 from urllib import request, parse
 import re
-import smtplib
-from email.mime.text import MIMEText
 
 import logging
 import time
 import pymysql
+
+import emailsend
 
 import time
 
@@ -163,8 +163,8 @@ class XMU_Lecture:
 					# 数据库里的信息已经是最新的，不需要任何操作
 					else:
 						pass
-					conn.close()	
-			
+					conn.close()
+						
 	def currentTime(self):
 		ISOTIMEFORMAT='%Y-%m-%d %X'
 		return time.strftime(ISOTIMEFORMAT, time.localtime())	
@@ -172,8 +172,7 @@ class XMU_Lecture:
 				
 lecture = XMU_Lecture()
 lecture.getCurrentLectureInfo()
-
-
+# emailsend.emailSend(useraddr="82736124@qq.com", subject="测试", message="测试")
 
 	
 
